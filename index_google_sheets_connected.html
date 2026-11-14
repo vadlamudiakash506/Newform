@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banana Market - Auction Entry</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f4f7fb,#101720);--panel:light-dark(#fff,#19232e);--text:light-dark(#17212b,#eef4f8);--muted:light-dark(#64748b,#a7b5c4);--line:light-dark(#dbe3ec,#334252);--accent:light-dark(#087f5b,#42d6a0);--accentText:#fff;--input:light-dark(#fff,#111a23)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,sans-serif}.app{min-height:100vh;padding:20px 14px 36px}.wrap{max-width:1050px;margin:0 auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);font-weight:700}.top h1{font-size:clamp(25px,5vw,34px);margin:4px 0}.date{font-size:13px;color:var(--muted);text-align:right}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 8px 24px #00000008}.panel h2{font-size:18px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-size:13px;color:var(--muted);font-weight:650}.field input,.field select{width:100%;min-width:0;background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:11px;padding:14px 12px;font:inherit}.field input:focus,.field select:focus{outline:2px solid var(--accent)}.full{grid-column:1/-1}.total{display:flex;justify-content:space-between;align-items:center;background:color-mix(in srgb,var(--accent) 11%,var(--panel));padding:13px 14px;border-radius:12px;margin-top:14px}.total strong{font-size:22px}.actions{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:9px;margin-top:15px}button{border:1px solid var(--line);border-radius:11px;padding:11px 10px;font:inherit;font-weight:700;cursor:pointer;background:var(--panel);color:var(--text)}button.primary{background:var(--accent);color:var(--accentText);border-color:var(--accent)}button:disabled{opacity:.5;cursor:not-allowed}.hint{font-size:12px;line-height:1.5;color:var(--muted);margin:12px 0 0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px}.stat span{display:block;font-size:12px;color:var(--muted)}.stat strong{font-size:20px;display:block;margin-top:4px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}td:last-child{text-align:right}.empty{color:var(--muted);text-align:center;padding:24px 10px}.row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.row-actions button{font-size:13px;padding:9px 12px}.status{font-size:13px;color:var(--accent);min-height:18px;margin-top:9px}.danger{color:#d0443e}.danger-btn{border-color:#d0443e;color:#d0443e}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.hidden{display:none!important}
+@media(max-width:520px){.app{padding:15px 10px}.panel{padding:14px}.grid{gap:11px}.actions{grid-template-columns:1fr 1fr}.actions .primary{grid-column:1/-1}.stat strong{font-size:17px}.date{font-size:11px}}
+@media print{body *{visibility:hidden!important}#printReceiptArea,#printReceiptArea *{visibility:visible!important}#printReceiptArea{display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;padding:8mm!important;background:#fff!important;color:#000!important;font:12pt Arial,sans-serif!important}#printReceiptArea h2{margin:0 0 8px;font-size:18pt}#printReceiptArea table{width:100%;border-collapse:collapse;white-space:normal;margin-top:10px}#printReceiptArea th,#printReceiptArea td{border:1px solid #777;padding:6px;color:#000;text-align:left}#printReceiptArea .receipt-total{margin-top:12px;padding-top:10px;border-top:2px solid #000;font-size:15pt;font-weight:bold}}
+.page-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:15px}.nav-tab.active{background:var(--accent);color:white;border-color:var(--accent)}.app-page{min-height:50vh}@media(max-width:520px){.page-nav{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="app"><div class="wrap">
+<header class="top"><div><div class="eyebrow">Wholesale • Daily entry</div><h1>🍌 Auction Entry</h1></div><div class="date" id="todayLabel"></div></header><div id="cloudStatus" class="status" role="status">Cloud: connecting…</div><nav class="page-nav"><button class="nav-tab active" data-page="pagePre">1. Pre-Auction</button><button class="nav-tab" data-page="pageAuction">2. Auction Entry</button><button class="nav-tab" data-page="pageReports">3. Reports</button></nav>
+
+<div id="pagePre" class="app-page"><section class="panel"><h2>Pre-Auction Farmer Registration</h2><p class="hint">Register each farmer once for the selected date. This information is saved only in this browser, not Google Sheets.</p><form id="preForm"><div class="grid"><div class="field"><label for="preDate">Auction date</label><input type="date" id="preDate" required></div><div class="field"><label for="preFarmer">Farmer name</label><input id="preFarmer" required placeholder="Farmer name"></div><div class="field full"><label for="preQty">Bunches brought</label><input id="preQty" type="number" min="0.01" step="any" required></div></div><div class="actions"><button class="primary" type="submit" id="preSave">＋ Register farmer</button><button type="button" id="preCancel">Clear</button></div><div class="status" id="preStatus"></div></form><h2 style="margin-top:18px">Farmer stock for selected date</h2><div class="tablewrap"><table><thead><tr><th>Farmer</th><th>Registered</th><th>Sold</th><th>Remaining</th><th>Action</th></tr></thead><tbody id="preRows"></tbody></table><div class="empty" id="preEmpty">No registrations for this date.</div></div></section>
+</div><div id="pageAuction" class="app-page hidden"><section class="panel">
+<h2 id="formTitle">Enter auction item</h2>
+<form id="entryForm" autocomplete="off">
+<div class="grid">
+<div class="field"><label for="auctionDate">Auction date</label><input id="auctionDate" type="date" required></div>
+<div class="field"><label for="farmer">Farmer name</label><input id="farmer" list="farmerList" placeholder="Enter farmer name" required><datalist id="farmerList"></datalist></div>
+<div class="field"><label for="quantity">Quantity (cases / gellalu)</label><input id="quantity" type="number" min="0.01" step="any" inputmode="decimal" placeholder="e.g. 25" required></div>
+<div class="field"><label for="buyer">Buyer name</label><input id="buyer" list="buyerList" placeholder="Enter buyer name" required><datalist id="buyerList"></datalist></div>
+<div class="field full"><label for="price">Price per unit (₹)</label><input id="price" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Enter rate per case" required></div>
+</div>
+<div class="total"><div><div class="eyebrow">Line total</div><div style="font-size:12px;color:var(--muted)">Quantity × price</div></div><strong id="totalDisplay">₹0.00</strong></div>
+<div class="actions"><button class="primary" id="saveEntryBtn" type="submit">＋ Save entry</button><button type="button" id="clearBtn">Clear form</button><button type="button" id="exportBtn">Export today's CSV</button></div>
+<div class="row-actions"><button type="button" id="cancelEditBtn" class="hidden">Cancel edit</button></div>
+<div class="status" id="status" role="status"></div>
+<p class="hint">Each saved row represents one buyer's purchase from one farmer. Use Edit if a quantity, buyer, farmer or rate needs correction.</p>
+</form></section>
+
+<section class="stats"><div class="stat"><span>Entries on selected date</span><strong id="entryCount">0</strong></div><div class="stat"><span>Total quantity</span><strong id="quantitySum">0</strong></div><div class="stat"><span>Total sales</span><strong id="salesSum">₹0.00</strong></div></section>
+
+</div><div id="pageReports" class="app-page hidden"><section class="panel">
+<div class="section-head"><h2 style="margin:0">Buyer Report</h2><button type="button" id="toggleBuyerReport">Open Buyer Report</button></div>
+<div id="buyerReportPanel" class="hidden" style="margin-top:16px">
+<div class="grid"><div class="field"><label for="reportBuyer">Buyer name</label><select id="reportBuyer"><option value="__ALL__">All buyers</option></select></div><div class="field"><label for="reportDate">Purchase date</label><input id="reportDate" type="date"></div></div>
+<div class="stats" style="margin-top:14px"><div class="stat"><span>Entries</span><strong id="reportCount">0</strong></div><div class="stat"><span>Total quantity</span><strong id="reportQuantity">0</strong></div><div class="stat"><span>Total purchase</span><strong id="reportTotal">₹0.00</strong></div></div>
+<div class="tablewrap"><table><thead><tr><th>Date</th><th>Buyer</th><th>Farmer</th><th>Quantity</th><th>Price ₹</th><th>Total ₹</th><th>Action</th></tr></thead><tbody id="reportBody"></tbody></table><div id="reportEmpty" class="empty">No purchases match these filters.</div></div>
+<div class="row-actions"><button type="button" id="printBuyerReceipt">Print Buyer Receipt</button></div>
+</div></section>
+
+<section class="panel">
+<div class="section-head"><h2 style="margin:0">Farmer Report</h2><button type="button" id="toggleFarmersReport">Open Farmer Report</button></div>
+<div id="farmersReportPanel" class="hidden" style="margin-top:16px">
+<div class="grid"><div class="field"><label for="reportFarmer">Farmer name</label><select id="reportFarmer"><option value="__ALL__">All farmers</option></select></div><div class="field"><label for="farmerReportDateFrom">From date</label><input id="farmerReportDateFrom" type="date"></div><div class="field"><label for="farmerReportDateTo">To date</label><input id="farmerReportDateTo" type="date"></div></div>
+<div class="stats" style="margin-top:14px"><div class="stat"><span>Gross total</span><strong id="farmerGross">₹0.00</strong></div><div class="stat"><span>Total quantity</span><strong id="farmerQty">0</strong></div><div class="stat"><span>12% commission</span><strong id="farmerCommission">₹0.00</strong></div></div>
+<div class="grid"><div class="field"><label for="transportCharges">Transport charges (₹)</label><input id="transportCharges" type="number" min="0" step="0.01" inputmode="decimal" value="0"></div><div class="field"><label>Quantity × ₹3 deduction</label><input id="deduction3" readonly value="₹0.00"></div><div class="field"><label>Quantity × ₹4 deduction</label><input id="deduction4" readonly value="₹0.00"></div><div class="field"><label>Total deductions (₹3 + ₹4)</label><input id="farmerDeductions" readonly value="₹0.00"></div></div>
+<div class="total"><div><div class="eyebrow">Grand total payable</div><div style="font-size:12px;color:var(--muted)">Gross − ₹3/₹4 deductions − 12% commission − transport</div></div><strong id="farmerGrandTotal">₹0.00</strong></div>
+<div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>Date</th><th>Farmer</th><th>Buyer</th><th>Quantity</th><th>Price ₹</th><th>Gross total ₹</th><th>Action</th></tr></thead><tbody id="farmersReportBody"></tbody></table><div id="farmersReportEmpty" class="empty">No entries match these filters.</div></div>
+<div class="row-actions"><button type="button" id="printFarmerReceipt">Print Farmer Receipt</button></div>
+<p class="hint">Transport charges are entered in this report and included in the receipt. They are not saved permanently; enter them again when required.</p>
+</div></section>
+
+<section class="panel"><h2>Saved entries <span id="recordCount" style="color:var(--muted);font-size:13px;font-weight:500"></span></h2>
+<div class="tablewrap"><table><thead><tr><th>Date</th><th>Farmer</th><th>Quantity</th><th>Buyer</th><th>Price ₹</th><th>Total ₹</th><th>Actions</th></tr></thead><tbody id="recordsBody"></tbody></table><div id="emptyState" class="empty">No entries yet. Save your first auction item above.</div></div>
+<div class="row-actions"><button id="exportAllBtn" type="button">Export all records (.CSV)</button><button id="deleteTodayBtn" type="button">Delete selected-date entries</button><button id="clearAllBtn" type="button" class="danger-btn">Clear all saved data</button></div>
+<p class="hint">Data is stored in this browser on this device. It does not automatically sync to other phones or computers. Export CSV backups regularly. This is a starter single-device version, not yet a multi-user cloud system.</p>
+</section>
+</div></div>
+
+<section id="printReceiptArea" style="display:none">
+<h2 id="receiptTitle">Auction Receipt</h2><p id="receiptDateLine"></p><p id="receiptNameLine"></p>
+<table><thead id="receiptHead"><tr><th>Date</th><th>Farmer</th><th>Buyer</th><th>Quantity</th><th>Price ₹</th><th>Total ₹</th></tr></thead><tbody id="receiptRows"></tbody></table>
+<table id="farmerReceiptDeductions" style="display:none;margin-top:12px"><tbody>
+<tr><td>Gross total</td><td id="receiptGross"></td></tr><tr><td>Total quantity</td><td id="receiptQuantity"></td></tr><tr><td>Quantity × ₹3 deduction</td><td id="receiptD3"></td></tr><tr><td>Quantity × ₹4 deduction</td><td id="receiptD4"></td></tr><tr><td>12% commission</td><td id="receiptCommission"></td></tr><tr><td>Transport charges</td><td id="receiptTransport"></td></tr></tbody></table>
+<div class="receipt-total" id="receiptGrand"></div><p style="margin-top:28px">Signature: ____________________</p>
+</section>
+</main>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+// Paste your deployed Google Apps Script Web App URL below. Keep the /exec ending.
+const API_URL = 'https://script.google.com/macros/s/AKfycbzqqQyB09T9PShG4yP_0keVeZTFyZD_mFLVXlmMFr4VfL8VphamTI4-YdJNrsJ7TsPufw/exec';
+let cloudSyncQueue = Promise.resolve();
+let cloudSyncTimer = null;
+let cloudReady = false;
+let preRows=[];let preEditId=null;
+let records = [];
+let editingId = null;
+
+function localDate(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function money(n){return '₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function number(n){return Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2});}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setStatus(msg,error=false){$('status').textContent=msg;$('status').classList.toggle('danger',error);}
+function setCloudStatus(message,error=false){const el=$('cloudStatus');if(el){el.textContent='Cloud: '+message;el.classList.toggle('danger',error);}}
+function cloudGet(){
+ return new Promise((resolve,reject)=>{
+  if(!API_URL || API_URL.includes('PASTE_YOUR_')) return reject(new Error('Add your Apps Script Web App URL in index.html first.'));
+  const callback='bananaCloudCallback_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+  const script=document.createElement('script');
+  const cleanup=()=>{delete window[callback];script.remove();};
+  const timeout=setTimeout(()=>{cleanup();reject(new Error('Google Sheets did not respond. Check the Web App URL and deployment access.'));},20000);
+  window[callback]=(data)=>{clearTimeout(timeout);cleanup();if(!data||!data.success)reject(new Error(data?.message||'Could not load cloud data.'));else resolve(data);};
+  script.onerror=()=>{clearTimeout(timeout);cleanup();reject(new Error('Could not connect to Google Apps Script.'));};
+  script.src=API_URL+'?action=getAll&callback='+callback+'&t='+Date.now();
+  document.body.appendChild(script);
+ });
+}
+function cloudSaveNow(){
+ if(!cloudReady) return Promise.resolve();
+ if(!API_URL || API_URL.includes('PASTE_YOUR_')) return Promise.reject(new Error('Apps Script URL is missing.'));
+ const payload={action:'saveAll',preAuction:preRows,auctionEntries:records};
+ const body=new URLSearchParams();body.set('payload',JSON.stringify(payload));
+ return fetch(API_URL,{method:'POST',mode:'no-cors',body}).then(()=>{
+  setCloudStatus('save sent; checking Google Sheets…');
+  return cloudGet();
+ }).then(data=>{
+  // The server response is re-read to verify that the latest snapshot reached Sheets.
+  const serverPre=(data.preAuction||[]).map(r=>[String(r.ID),String(r.Date).slice(0,10),String(r.Farmer),Number(r['Registered Quantity'])]);
+  const localPre=preRows.map(r=>[String(r.id),String(r.date),String(r.farmer),Number(r.quantity)]);
+  const serverAuction=(data.auctionEntries||[]).map(r=>[String(r.ID),String(r.Date).slice(0,10),String(r.Farmer),Number(r.Quantity),String(r.Buyer),Number(r.Price),Number(r.Total)]);
+  const localAuction=records.map(r=>[String(r.id),String(r.date),String(r.farmer),Number(r.quantity),String(r.buyer),Number(r.price),Number(r.total)]);
+  if(JSON.stringify(serverPre)!==JSON.stringify(localPre)||JSON.stringify(serverAuction)!==JSON.stringify(localAuction)) throw new Error('Google Sheets did not match the latest changes. Refresh and check the spreadsheet before continuing.');
+  const serverCount=serverPre.length+serverAuction.length;
+  setCloudStatus('connected • '+serverCount+' records synced');
+ }).catch(err=>{setCloudStatus(err.message||'sync failed',true);console.error(err);});
+}
+function queueCloudSave(){
+ if(!cloudReady) return;
+ clearTimeout(cloudSyncTimer);
+ cloudSyncTimer=setTimeout(()=>{
+  cloudSyncQueue=cloudSyncQueue.then(()=>cloudSaveNow()).catch(err=>{setCloudStatus(err.message,true);});
+ },350);
+}
+function persist(){queueCloudSave();}
+function savePre(){queueCloudSave();}
+async function initializeCloud(){
+ setCloudStatus('connecting…');
+ try{
+  const data=await cloudGet();
+  preRows=Array.isArray(data.preAuction)?data.preAuction.map(r=>({id:String(r.ID),date:String(r.Date).slice(0,10),farmer:String(r.Farmer),quantity:Number(r['Registered Quantity']),createdAt:r['Created At']||''})):[];
+  records=Array.isArray(data.auctionEntries)?data.auctionEntries.map(r=>({id:String(r.ID),date:String(r.Date).slice(0,10),farmer:String(r.Farmer),quantity:Number(r.Quantity),buyer:String(r.Buyer),price:Number(r.Price),total:Number(r.Total),updatedAt:r['Updated At']||''})):[];
+  cloudReady=true;render();updateTotal();showPage('pagePre');
+  setCloudStatus('connected • '+(preRows.length+records.length)+' records loaded');
+ }catch(err){cloudReady=false;setCloudStatus(err.message||'connection failed',true);$('preStatus').textContent='Cloud connection failed. Check your Apps Script URL and deployment. Do not enter live records until connected.';setStatus('Cloud connection failed. No data was loaded.',true);}
+}
+function updateTotal(){const q=Number($('quantity').value)||0,p=Number($('price').value)||0;$('totalDisplay').textContent=money(q*p);}
+function resetForm(){editingId=null;$('entryForm').reset();$('auctionDate').value=localDate();$('saveEntryBtn').textContent='＋ Save entry';$('cancelEditBtn').classList.add('hidden');$('formTitle').textContent='Enter auction item';updateTotal();}
+function refreshNameLists(){
+ const date=$('auctionDate').value||localDate(),todays=records.filter(r=>r.date===date);
+ const farmers=[...new Set([...preRows.filter(r=>r.date===date).map(r=>r.farmer),...todays.map(r=>r.farmer)])].sort((a,b)=>a.localeCompare(b));
+ const buyers=[...new Set(todays.map(r=>r.buyer).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ $('farmerList').innerHTML=farmers.map(x=>`<option value="${esc(x)}">`).join('');$('buyerList').innerHTML=buyers.map(x=>`<option value="${esc(x)}">`).join('');
+ const reportDate=$('reportDate').value||localDate();
+ // Buyer choices follow the selected buyer-report date.
+ const reportBuyers=[...new Set(records.filter(r=>r.date===reportDate).map(r=>r.buyer).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ // Farmer choices follow the farmer-report date range (including both endpoints).
+ let farmerFrom=$('farmerReportDateFrom').value||localDate(),farmerTo=$('farmerReportDateTo').value||localDate();
+ if(farmerFrom>farmerTo)[farmerFrom,farmerTo]=[farmerTo,farmerFrom];
+ const reportFarmers=[...new Set(records.filter(r=>r.date>=farmerFrom&&r.date<=farmerTo).map(r=>r.farmer).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const ob=$('reportBuyer').value||'__ALL__',of=$('reportFarmer').value||'__ALL__';
+ $('reportBuyer').innerHTML='<option value="__ALL__">All buyers</option>'+reportBuyers.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+ $('reportFarmer').innerHTML='<option value="__ALL__">All farmers</option>'+reportFarmers.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+ $('reportBuyer').value=[...$('reportBuyer').options].some(o=>o.value===ob)?ob:'__ALL__';
+ $('reportFarmer').value=[...$('reportFarmer').options].some(o=>o.value===of)?of:'__ALL__';
+}
+
+function soldFor(date,farmer,exclude=null){return records.filter(r=>r.date===date&&r.farmer.toLowerCase()===farmer.toLowerCase()&&String(r.id)!==String(exclude??'')).reduce((a,r)=>a+Number(r.quantity||0),0);}
+function renderPre(){const d=$('preDate').value||localDate(),rows=preRows.filter(r=>r.date===d);$('preRows').innerHTML=rows.map(r=>{let sold=soldFor(d,r.farmer),rem=Number(r.quantity)-sold;return `<tr><td>${esc(r.farmer)}</td><td>${number(r.quantity)}</td><td>${number(sold)}</td><td><b>${number(rem)}</b></td><td><button data-pre-edit="${esc(r.id)}">Edit</button></td></tr>`}).join('');$('preEmpty').style.display=rows.length?'none':'block';}
+
+function selectedBuyerRows(){const date=$('reportDate').value||localDate(),buyer=$('reportBuyer').value||'__ALL__';return records.filter(r=>r.date===date&&(buyer==='__ALL__'||r.buyer.toLowerCase()===buyer.toLowerCase()));}
+function selectedFarmerRows(){let from=$('farmerReportDateFrom').value||localDate(),to=$('farmerReportDateTo').value||localDate();if(from>to)[from,to]=[to,from];const farmer=$('reportFarmer').value||'__ALL__';return records.filter(r=>r.date>=from&&r.date<=to&&(farmer==='__ALL__'||r.farmer.toLowerCase()===farmer.toLowerCase()));}
+function renderBuyerReport(){
+ const rows=selectedBuyerRows(),qty=rows.reduce((s,r)=>s+Number(r.quantity||0),0),total=rows.reduce((s,r)=>s+Number(r.total||0),0);
+ $('reportCount').textContent=rows.length;$('reportQuantity').textContent=number(qty);$('reportTotal').textContent=money(total);
+ $('reportBody').innerHTML=rows.slice().reverse().map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.buyer)}</td><td>${esc(r.farmer)}</td><td>${number(r.quantity)}</td><td>${money(r.price)}</td><td>${money(r.total)}</td><td><button type="button" data-report-edit="${esc(r.id)}">Edit</button></td></tr>`).join('');
+ $('reportEmpty').style.display=rows.length?'none':'block';
+}
+function renderFarmerReport(){
+ const rows=selectedFarmerRows(),qty=rows.reduce((s,r)=>s+Number(r.quantity||0),0),gross=rows.reduce((s,r)=>s+Number(r.total||0),0);
+ const d3=qty*3,d4=qty*4,commission=gross*.12,transport=Math.max(0,Number($('transportCharges').value)||0),deductions=d3+d4,grand=gross-deductions-commission-transport;
+ $('farmerGross').textContent=money(gross);$('farmerQty').textContent=number(qty);$('farmerCommission').textContent=money(commission);
+ $('deduction3').value=money(d3);$('deduction4').value=money(d4);$('farmerDeductions').value=money(deductions);$('farmerGrandTotal').textContent=money(grand);
+ $('farmersReportBody').innerHTML=rows.slice().reverse().map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.farmer)}</td><td>${esc(r.buyer)}</td><td>${number(r.quantity)}</td><td>${money(r.price)}</td><td>${money(r.total)}</td><td><button type="button" data-report-edit="${esc(r.id)}">Edit</button></td></tr>`).join('');
+ $('farmersReportEmpty').style.display=rows.length?'none':'block';
+}
+function render(){
+ refreshNameLists();renderPre();
+ const selectedDate=$('auctionDate').value||localDate(),todays=records.filter(r=>r.date===selectedDate);
+ $('entryCount').textContent=todays.length;$('quantitySum').textContent=number(todays.reduce((s,r)=>s+Number(r.quantity||0),0));$('salesSum').textContent=money(todays.reduce((s,r)=>s+Number(r.total||0),0));
+ $('recordCount').textContent=`(${records.length.toLocaleString('en-IN')})`;
+ $('recordsBody').innerHTML=records.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.farmer)}</td><td>${number(r.quantity)}</td><td>${esc(r.buyer)}</td><td>${money(r.price)}</td><td><b>${money(r.total)}</b></td><td><button type="button" data-edit="${esc(r.id)}">Edit</button> <button type="button" data-delete="${esc(r.id)}" aria-label="Delete entry">×</button></td></tr>`).join('');
+ $('emptyState').style.display=records.length?'none':'block';
+ renderBuyerReport();renderFarmerReport();
+}
+function editRecord(id){
+ const r=records.find(x=>String(x.id)===String(id));if(!r)return;
+ editingId=r.id;$('auctionDate').value=r.date;$('farmer').value=r.farmer;$('quantity').value=r.quantity;$('buyer').value=r.buyer;$('price').value=r.price;
+ $('saveEntryBtn').textContent='Update entry';$('cancelEditBtn').classList.remove('hidden');$('formTitle').textContent='Edit auction item';updateTotal();
+ $('entryForm').scrollIntoView({behavior:'smooth',block:'start'});setStatus('Editing entry. Update the details and save.');
+}
+function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
+function exportCSV(rows,filename){
+ if(!rows.length){setStatus('No records to export.',true);return;}
+ const header=['Date','Farmer','Quantity','Buyer','Price','Total'];
+ const lines=[header,...rows.map(r=>[r.date,r.farmer,r.quantity,r.buyer,r.price,r.total])].map(row=>row.map(csvCell).join(','));
+ const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);setStatus('CSV export created.');
+}
+function preparePrint(title,dateLine,nameLine,rows,farmerSummary=null){
+ $('receiptTitle').textContent=title;$('receiptDateLine').textContent=dateLine;$('receiptNameLine').textContent=nameLine;
+ $('receiptHead').innerHTML='<tr><th>Date</th><th>Farmer</th><th>Buyer</th><th>Quantity</th><th>Price ₹</th><th>Total ₹</th></tr>';
+ $('receiptRows').innerHTML=rows.map(r=>`<tr><td>${esc(r.date)}</td><td>${esc(r.farmer)}</td><td>${esc(r.buyer)}</td><td>${number(r.quantity)}</td><td>${money(r.price)}</td><td>${money(r.total)}</td></tr>`).join('');
+ const deductions=$('farmerReceiptDeductions');deductions.style.display=farmerSummary?'table':'none';
+ if(farmerSummary){
+  $('receiptGross').textContent=money(farmerSummary.gross);$('receiptQuantity').textContent=number(farmerSummary.qty);$('receiptD3').textContent=money(farmerSummary.d3);$('receiptD4').textContent=money(farmerSummary.d4);$('receiptCommission').textContent=money(farmerSummary.commission);$('receiptTransport').textContent=money(farmerSummary.transport);
+  $('receiptGrand').textContent='Grand total payable: '+money(farmerSummary.grand);
+ }else{$('receiptGrand').textContent='Total purchase: '+money(rows.reduce((s,r)=>s+Number(r.total||0),0));}
+ window.print();
+}
+function showPage(id){document.querySelectorAll('.app-page').forEach(x=>x.classList.toggle('hidden',x.id!==id));document.querySelectorAll('.nav-tab').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='pageAuction')render();if(id==='pageReports'){renderBuyerReport();renderFarmerReport();}if(id==='pagePre')renderPre();}
+document.querySelectorAll('.nav-tab').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+$('preDate').addEventListener('change',renderPre);
+$('preForm').addEventListener('submit',e=>{e.preventDefault();if(!cloudReady){$('preStatus').textContent='Wait until Google Sheets is connected.';return;}let date=$('preDate').value,farmer=$('preFarmer').value.trim(),quantity=Number($('preQty').value);if(!date||!farmer||quantity<=0){$('preStatus').textContent='Enter valid details.';return;}let duplicate=preRows.find(r=>r.date===date&&r.farmer.toLowerCase()===farmer.toLowerCase()&&String(r.id)!==String(preEditId));if(duplicate){$('preStatus').textContent='Farmer already registered for this date.';return;}if(preEditId){let old=preRows.find(r=>String(r.id)===String(preEditId));if(old&&soldFor(old.date,old.farmer)>0&&(old.date!==date||old.farmer.toLowerCase()!==farmer.toLowerCase())){$('preStatus').textContent='Cannot change farmer/date after auction sales exist.';return;}if(quantity<soldFor(date,farmer)){$('preStatus').textContent='Quantity cannot be less than already sold.';return;}let i=preRows.findIndex(r=>String(r.id)===String(preEditId));preRows[i]={id:preEditId,date,farmer,quantity};}else preRows.push({id:'pre-'+Date.now(),date,farmer,quantity});savePre();preEditId=null;$('preForm').reset();$('preDate').value=date;$('preSave').textContent='＋ Register farmer';$('preStatus').textContent='Registration saved.';$('auctionDate').value=date;render();});
+$('preRows').addEventListener('click',e=>{let b=e.target.closest('[data-pre-edit]');if(!b)return;let r=preRows.find(x=>String(x.id)===b.dataset.preEdit);if(!r)return;preEditId=r.id;$('preDate').value=r.date;$('preFarmer').value=r.farmer;$('preQty').value=r.quantity;$('preSave').textContent='Update registration';});
+$('preCancel').addEventListener('click',()=>{$('preForm').reset();$('preDate').value=localDate();preEditId=null;$('preSave').textContent='＋ Register farmer';});
+$('entryForm').addEventListener('submit',e=>{
+ e.preventDefault();if(!cloudReady){setStatus('Wait until Google Sheets is connected.',true);return;}
+ const date=$('auctionDate').value,farmer=$('farmer').value.trim(),buyer=$('buyer').value.trim(),quantity=Number($('quantity').value),price=Number($('price').value);
+ if(!date||!farmer||!buyer||!Number.isFinite(quantity)||quantity<=0||!Number.isFinite(price)||price<0){setStatus('Please enter valid date, farmer, quantity, buyer and price.',true);return;}
+ const reg=preRows.find(r=>r.date===date&&r.farmer.toLowerCase()===farmer.toLowerCase());if(!reg){setStatus('Register this farmer in Pre-Auction for the selected date first.',true);return;}const available=Number(reg.quantity)-soldFor(date,farmer,editingId);if(quantity>available){setStatus(`Only ${number(available)} bunches remain for this farmer.`,true);return;}
+ const record={id:editingId||('local-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8)),date,farmer,buyer,quantity,price,total:Number((quantity*price).toFixed(2)),updatedAt:new Date().toISOString()};
+ if(editingId){const i=records.findIndex(r=>String(r.id)===String(editingId));if(i>=0)records[i]=record;setStatus('Entry updated successfully.');}
+ else{record.createdAt=record.updatedAt;records.push(record);setStatus('Entry saved successfully.');}
+ try{persist();const keepDate=date,keepFarmer=farmer;resetForm();$('auctionDate').value=keepDate;$('farmer').value=keepFarmer;render();}catch(err){setStatus('Could not save. Browser storage may be full or unavailable.',true);}
+});
+$('reportBody').addEventListener('click',e=>{const b=e.target.closest('[data-report-edit]');if(b){showPage('pageAuction');editRecord(b.dataset.reportEdit);}});
+$('farmersReportBody').addEventListener('click',e=>{const b=e.target.closest('[data-report-edit]');if(b){showPage('pageAuction');editRecord(b.dataset.reportEdit);}});
+$('recordsBody').addEventListener('click',e=>{
+ const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');
+ if(edit)editRecord(edit.dataset.edit);
+ if(del){if(!cloudReady){setStatus('Cloud is not connected.',true);return;}const id=del.dataset.delete;if(!confirm('Delete this entry permanently from this browser?'))return;records=records.filter(r=>String(r.id)!==String(id));persist();render();setStatus('Entry deleted.');}
+});
+$('clearBtn').addEventListener('click',()=>{resetForm();setStatus('Form cleared.');});
+$('cancelEditBtn').addEventListener('click',()=>{resetForm();setStatus('Edit cancelled.');});
+$('quantity').addEventListener('input',updateTotal);$('price').addEventListener('input',updateTotal);
+$('auctionDate').addEventListener('change',()=>{$('preDate').value=$('auctionDate').value;render();});
+$('reportBuyer').addEventListener('change',renderBuyerReport);$('reportDate').addEventListener('change',()=>{refreshNameLists();renderBuyerReport();});
+$('reportFarmer').addEventListener('change',renderFarmerReport);
+['farmerReportDateFrom','farmerReportDateTo'].forEach(id=>$(id).addEventListener('change',()=>{refreshNameLists();renderFarmerReport();}));
+$('transportCharges').addEventListener('input',renderFarmerReport);
+$('toggleBuyerReport').addEventListener('click',()=>{const p=$('buyerReportPanel');p.classList.toggle('hidden');$('toggleBuyerReport').textContent=p.classList.contains('hidden')?'Open Buyer Report':'Close Buyer Report';});
+$('toggleFarmersReport').addEventListener('click',()=>{const p=$('farmersReportPanel');p.classList.toggle('hidden');$('toggleFarmersReport').textContent=p.classList.contains('hidden')?'Open Farmer Report':'Close Farmer Report';});
+$('exportBtn').addEventListener('click',()=>exportCSV(records.filter(r=>r.date===($('auctionDate').value||localDate())),'auction-'+($('auctionDate').value||localDate())+'.csv'));
+$('exportAllBtn').addEventListener('click',()=>exportCSV(records,'auction-all-records.csv'));
+$('deleteTodayBtn').addEventListener('click',()=>{if(!cloudReady){setStatus('Cloud is not connected.',true);return;}const date=$('auctionDate').value||localDate(),count=records.filter(r=>r.date===date).length;if(!count){setStatus('No entries for selected date.');return;}if(!confirm(`Delete ${count} entries dated ${date}? This cannot be undone.`))return;records=records.filter(r=>r.date!==date);persist();render();setStatus('Selected-date entries deleted.');});
+$('clearAllBtn').addEventListener('click',()=>{if(!cloudReady){setStatus('Cloud is not connected.',true);return;}if(!records.length){setStatus('There is no saved data.');return;}if(!confirm('Delete ALL saved auction records from this browser? Export a backup first.'))return;records=[];persist();render();setStatus('All local records deleted.');});
+$('printBuyerReceipt').addEventListener('click',()=>{const rows=selectedBuyerRows();if(!rows.length){setStatus('No buyer records to print.',true);return;}const buyer=$('reportBuyer').value==='__ALL__'?'All buyers':$('reportBuyer').value;preparePrint('Buyer Purchase Receipt','Date: '+($('reportDate').value||localDate()),'Buyer: '+buyer,rows);});
+$('printFarmerReceipt').addEventListener('click',()=>{
+ const rows=selectedFarmerRows();if(!rows.length){setStatus('No farmer records to print.',true);return;}
+ const qty=rows.reduce((s,r)=>s+Number(r.quantity||0),0),gross=rows.reduce((s,r)=>s+Number(r.total||0),0),d3=qty*3,d4=qty*4,commission=gross*.12,transport=Math.max(0,Number($('transportCharges').value)||0);
+ const farmer=$('reportFarmer').value==='__ALL__'?'All farmers':$('reportFarmer').value;
+ preparePrint('Farmer Settlement Receipt','Period: '+($('farmerReportDateFrom').value||localDate())+' to '+($('farmerReportDateTo').value||localDate()),'Farmer: '+farmer,rows,{qty,gross,d3,d4,commission,transport,grand:gross-d3-d4-commission-transport});
+});
+$('todayLabel').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+$('auctionDate').value=localDate();$('preDate').value=localDate();$('reportDate').value=localDate();$('farmerReportDateFrom').value=localDate();$('farmerReportDateTo').value=localDate();
+render();updateTotal();showPage('pagePre');initializeCloud();
+</script>
+</body>
+</html>
